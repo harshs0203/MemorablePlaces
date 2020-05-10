@@ -25,6 +25,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,9 +37,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationListener locationListener;
 
     public void zoomOnUsersLocation(Location location, String title){
-        if(location != null) {
+        if(location != null ) {
             LatLng usersLocation = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.clear();
             mMap.addMarker(new MarkerOptions().position(usersLocation).title(title).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(usersLocation, 12));
         }
@@ -48,11 +49,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
             if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
                 Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                mMap.clear();
                 zoomOnUsersLocation(lastKnownLocation,"Your Location....");
-
             }
         }
     }
@@ -78,9 +78,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
            locationListener = new LocationListener() {
                @Override
                public void onLocationChanged(Location location) {
-
+                   mMap.clear();
                    zoomOnUsersLocation(location,"Your Location....");
-
                }
 
                @Override
@@ -129,6 +128,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch (Exception e){
             e.printStackTrace();
         }
+        if(address.equals("")){
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm dd-MM-yyyy");
+            address+= simpleDateFormat.format(new Date());
+        }
         mMap.addMarker(new MarkerOptions().position(latLng).title(address).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+
+        MainActivity.arrayList.add(address);
+        MainActivity.locationList.add(latLng);
+        MainActivity.arrayAdapter.notifyDataSetChanged();
+
+        Toast.makeText(MapsActivity.this,"Your new Memorable Place is added to the list",Toast.LENGTH_SHORT).show();
     }
 }

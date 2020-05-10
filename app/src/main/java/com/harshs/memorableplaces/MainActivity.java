@@ -9,9 +9,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    static ArrayList<String> arrayList;
+    static ArrayList<LatLng> locationList;
+    static ArrayAdapter<String> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +26,12 @@ public class MainActivity extends AppCompatActivity {
 
         ListView listView= (ListView) findViewById(R.id.listView);
         final Intent intent =new Intent(getApplicationContext(),MapsActivity.class);
-        ArrayList<String> arrayList =  new ArrayList<String>();
+       arrayList =  new ArrayList<String>();
+       locationList = new ArrayList<LatLng>();
+
         arrayList.add("Add a New Place");
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
+        locationList.add(new LatLng(0,0));
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
