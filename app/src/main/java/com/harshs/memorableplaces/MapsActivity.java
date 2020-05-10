@@ -108,8 +108,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                zoomOnUsersLocation(lastKnownLocation,"Your Location....");
 
            }
-       }
+       }else{
+        Location newLocation = new Location(LocationManager.GPS_PROVIDER);
+        newLocation.setLatitude(MainActivity.locationList.get(intent.getIntExtra("placeNumber",0)).latitude);
+           newLocation.setLongitude(MainActivity.locationList.get(intent.getIntExtra("placeNumber",0)).longitude);
 
+           zoomOnUsersLocation(newLocation,MainActivity.arrayList.get(intent.getIntExtra("placeNumber",0)));
+       }
     }
     @Override
     public void onMapLongClick(LatLng latLng) {
